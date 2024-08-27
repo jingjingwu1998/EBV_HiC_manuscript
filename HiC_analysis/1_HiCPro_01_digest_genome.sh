@@ -12,4 +12,4 @@ export PROJECT_DIR="/share/lab_teng/data/software/HiC-Pro_3.1.0/bin/utils"
 
 cd $PROJECT_DIR
 
-python digest_genome.py -r ^GATC ^GANTC -o /share/lab_teng/data/software/HiC-Pro_3.1.0/annotation/arima_resfrag_hg19.bed ../../../../genomes/GRCh37/GRCh37.primary_assembly.genome.fa
+python digest_genome.py -r ^GATC G^ANTC -o /share/lab_teng/data/software/HiC-Pro_3.1.0/annotation/arima_resfrag_hg19.bed ../../../../genomes/GRCh37/GRCh37.primary_assembly.genome.fa
