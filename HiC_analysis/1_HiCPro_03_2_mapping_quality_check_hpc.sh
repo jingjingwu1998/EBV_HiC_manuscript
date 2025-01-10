@@ -1,6 +1,6 @@
 #!/bin/bash
 #PBS -l nodes=1:ppn=1,mem=72gb,walltime=120:00:00
-#PBS -M xiang.liu@moffitt.org
+#PBS -M Jingjing.Wu@moffitt.org
 #PBS -m ae
 #PBS -j eo
 #PBS -N mapping_quality_checks
