@@ -36,7 +36,7 @@ PAIR2_EXT = _2
 
 MIN_MAPQ = 10
 
-BOWTIE2_IDX_PATH = /share/lab_teng/data/genomes/hg19/bowtie2-2.2.3
+BOWTIE2_IDX_PATH = /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/bowtie2-2.2.3
 BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
 BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder
 
@@ -45,7 +45,7 @@ BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to
 #######################################################################
 
 REFERENCE_GENOME = GRCh37
-GENOME_SIZE = /share/lab_teng/data/software/HiC-Pro_3.1.0/annotation/chrom_hg19.sizes
+GENOME_SIZE = /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/chrom_hg19.sizes
 
 #######################################################################
 ## Allele specific analysis
@@ -64,7 +64,7 @@ REPORT_CAPTURE_REPORTER = 1
 ## Digestion Hi-C
 #######################################################################
 
-GENOME_FRAGMENT = /share/lab_teng/data/software/HiC-Pro_3.1.0/annotation/arima_resfrag_hg19.bed
+GENOME_FRAGMENT = /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/arima_resfrag_hg19.bed
 LIGATION_SITE = GATCGATC,GANTGATC,GANTANTC,GATCANTC
 MIN_FRAG_SIZE = 
 MAX_FRAG_SIZE =
