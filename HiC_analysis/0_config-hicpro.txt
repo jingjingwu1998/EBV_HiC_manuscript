@@ -21,7 +21,7 @@ JOB_NAME = hic_bo
 JOB_MEM = 72gb
 JOB_WALLTIME = 120:00:00
 JOB_QUEUE = batch
-JOB_MAIL = xiang.liu@moffitt.org
+JOB_MAIL = Jingjing.Wu@moffitt.org
 
 #########################################################################
 ## Data
