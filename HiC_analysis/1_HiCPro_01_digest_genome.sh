@@ -4,11 +4,11 @@
 #PBS -l walltime=12:00:00
 #PBS -l nodes=1:ppn=4,mem=32gb
 #PBS -m bea
-#PBS -M Xiang.Liu@moffitt.org
+#PBS -M Jingjing.Wu@moffitt.org
 
 # This script is used to generate genome fragment based on arima cut site (^GATC ^GANTC) for Hicpro usage
 
-export PROJECT_DIR="/share/lab_teng/data/software/HiC-Pro_3.1.0/bin/utils"
+export PROJECT_DIR="/share/lab_teng/trainee/JingjingWu/EBV/HiC_performance"
 
 cd $PROJECT_DIR
 
