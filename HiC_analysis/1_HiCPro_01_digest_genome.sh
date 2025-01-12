@@ -16,5 +16,5 @@ cd $PROJECT_DIR
 # python digest_genome.py -r ^GATC G^ANTC -o /share/lab_teng/data/software/HiC-Pro_3.1.0/annotation/arima_resfrag_hg19.bed ../../../../genomes/GRCh37/GRCh37.primary_assembly.genome.fa
 
 # v1
-python digest_genome.py -r ^GATC G^ANTC -o /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/arima_resfrag_hg19.bed /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/GRCh37.primary_assembly.genome.fa
-
+# python digest_genome.py -r ^GATC G^ANTC -o /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/arima_resfrag_hg19.bed /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/GRCh37.primary_assembly.genome.fa
+python digest_genome.py -r \^GATC G\^ANTC -o /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/arima_resfrag_hg19.bed /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/GRCh37.primary_assembly.genome.fa
