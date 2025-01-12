@@ -8,7 +8,7 @@
 
 # This script is used to generate genome fragment based on arima cut site (^GATC ^GANTC) for Hicpro usage
 
-export PROJECT_DIR="/share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro/bin/utils/digest_genome.py"
+export PROJECT_DIR="/share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro/bin/utils"
 
 cd $PROJECT_DIR
 
