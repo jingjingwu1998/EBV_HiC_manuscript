@@ -1,9 +1,9 @@
 Analysis tools:
 HiC-Pro (3.1.0)
 miniMDS (download from github, no release version)
+g3dtools (download from github, no release version)
+Juicer (1.5)
 
-Downloaded g3dtools (download from github, no release version)
-Downloaded Juicer (1.5)
 Downloaded Juicebox (1.11.08)
 Downloaded+Installed matrix2insulation.pl (download from github, no release version)
 
