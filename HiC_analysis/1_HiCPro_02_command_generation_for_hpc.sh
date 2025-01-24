@@ -17,8 +17,10 @@ cd $PROJECT_DIR
 
 # Step 1: HiC-Pro mapping command
 # /share/lab_teng/data/software/HiC-Pro_3.1.0/bin/HiC-Pro -c 0_config-hicpro.txt -i $RAW_DATA -o hicpro_mapping_2 -s mapping -s quality_checks -p
+
 /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro_install_path/HiC-Pro_3.1.0/bin/HiC-Pro -c 0_config-hicpro.txt -i $RAW_DATA -o hicpro_mapping_2 -s mapping -s quality_checks -p
 
+#/share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro_install_path/HiC-Pro_3.1.0/bin/HiC-Pro -c 0_config-hicpro.txt -i /share/lab_teng/trainee/JingjingWu/EBV/raw_data -o hicpro_mapping_2 -s mapping -s quality_checks -p
 
 # Step 2: HiC-Pro proc_hic command
 /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro_install_path/HiC-Pro_3.1.0/bin/HiC-Pro -c 0_config-hicpro.txt -i ${MAP_DATA}/bowtie_results/bwt2 -o proc_hic_out -s proc_hic -s quality_checks -p
