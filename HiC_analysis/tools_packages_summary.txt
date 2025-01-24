@@ -1,7 +1,7 @@
 Analysis tools:
 HiC-Pro (3.1.0)
+miniMDS (download from github, no release version)
 
-Downloaded+Tested miniMDS (download from github, no release version)
 Downloaded g3dtools (download from github, no release version)
 Downloaded Juicer (1.5)
 Downloaded Juicebox (1.11.08)
