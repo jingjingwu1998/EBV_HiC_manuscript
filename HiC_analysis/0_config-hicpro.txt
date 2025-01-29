@@ -36,7 +36,7 @@ PAIR2_EXT = _2
 
 MIN_MAPQ = 10
 
-BOWTIE2_IDX_PATH = /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/bowtie2-2.2.3
+BOWTIE2_IDX_PATH = /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/bowtie2-build_index
 BOWTIE2_GLOBAL_OPTIONS = --very-sensitive -L 30 --score-min L,-0.6,-0.2 --end-to-end --reorder
 BOWTIE2_LOCAL_OPTIONS =  --very-sensitive -L 20 --score-min L,-0.6,-0.2 --end-to-end --reorder
 
