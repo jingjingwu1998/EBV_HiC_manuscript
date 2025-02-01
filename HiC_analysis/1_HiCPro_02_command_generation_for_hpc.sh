@@ -8,7 +8,9 @@
 # export MAP_DATA="/share/lab_teng/xiangliu/hic_analysis/hicpro_mapping_2"
 export PROJECT_DIR="/share/lab_teng/trainee/JingjingWu/EBV/hicpro_mapping_2"
 export RAW_DATA="/share/lab_teng/trainee/JingjingWu/EBV/raw_data"
-export MAP_DATA="/share/lab_teng/trainee/JingjingWu/EBV/hicpro_mapping_2"
+# export MAP_DATA="/share/lab_teng/trainee/JingjingWu/EBV/hicpro_mapping_2"
+export MAP_DATA="/share/lab_teng/trainee/JingjingWu/EBV/hicpro_mapping_2/hicpro_mapping_2"
+
 
 # module load gcc/5.4.0
 module load gcc/11.2.0
