@@ -1,0 +1,3 @@
+HiC-Pro -s mapping -i fastq -o hicpro -c hicpro.config
+HiC-Pro -s proc_hic -i hicpro/bowtie_results/bwt2 -o hicpro -c hicpro.config
+HiC-Pro -s merge_persample -c hicpro.config -i hicpro/hic_results/data -o hicpro
