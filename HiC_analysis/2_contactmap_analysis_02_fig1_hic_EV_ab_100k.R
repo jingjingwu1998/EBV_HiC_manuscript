@@ -12,7 +12,7 @@ lcl <- importC('matrix/Day28/iced/100000/Day28_100000_iced.matrix',xgi.bed="matr
 
 binsize <- 100000
 
-# get bigwig file
+# get bigwig file, eg. ChIP-seq signal data for H3K4Me3
 mem.maxVSize(vsize = Inf)
 cov <- import('../mt/ENCFF818GNV.GM12878.H3K4Me3.bigWig',as = "Rle")
 
