@@ -7,14 +7,16 @@ library(rtracklayer)
 library(mixOmics)
 
 # input 
-rbl <- importC('matrix/Day0/iced/100000/Day0_100000_iced.matrix',xgi.bed="matrix/Day0/raw/100000/Day0_100000_abs.bed",ygi.bed="matrix/Day0/raw/100000/Day0_100000_abs.bed",rm.trans=T)
-lcl <- importC('matrix/Day28/iced/100000/Day28_100000_iced.matrix',xgi.bed="matrix/Day28/raw/100000/Day28_100000_abs.bed",ygi.bed="matrix/Day28/raw/100000/Day28_100000_abs.bed",rm.trans=T)
+#rbl <- importC('matrix/Day0/iced/100000/Day0_100000_iced.matrix',xgi.bed="matrix/Day0/raw/100000/Day0_100000_abs.bed",ygi.bed="matrix/Day0/raw/100000/Day0_100000_abs.bed",rm.trans=T)
+#lcl <- importC('matrix/Day28/iced/100000/Day28_100000_iced.matrix',xgi.bed="matrix/Day28/raw/100000/Day28_100000_abs.bed",ygi.bed="matrix/Day28/raw/100000/Day28_100000_abs.bed",rm.trans=T)
+rbl <- importC('matrix/Day0/iced/100000/Day0_CKDL220009103-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_iced.matrix',xgi.bed="matrix/Day0/raw/100000/Day0_CKDL220009103-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed",ygi.bed="matrix/Day0/raw/100000/Day0_CKDL220009103-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed",rm.trans=T)
+lcl <- importC('matrix/Day28/iced/100000/Day28_CKDL220009104-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_iced.matrix',xgi.bed="matrix/Day28/raw/100000/Day28_CKDL220009104-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed",ygi.bed="matrix/Day28/raw/100000/Day28_CKDL220009104-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed",rm.trans=T)
 
 binsize <- 100000
 
 # get bigwig file, eg. ChIP-seq signal data for H3K4Me3
-mem.maxVSize(vsize = Inf)
-cov <- import('../mt/ENCFF818GNV.GM12878.H3K4Me3.bigWig',as = "Rle")
+#mem.maxVSize(vsize = Inf)
+#cov <- import('../mt/ENCFF818GNV.GM12878.H3K4Me3.bigWig',as = "Rle")
 
 # calculate EV for each chromosome
 
