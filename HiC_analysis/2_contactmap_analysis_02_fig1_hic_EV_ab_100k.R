@@ -32,10 +32,11 @@ for(i in 23:1){
     lcl.xdata[is.na(lcl.xdata)] = 0
     rbl.ev <- as.numeric(runmean(Rle(pca(rbl.xdata,ncomp = 2,center = T,scale = F,logratio = 'none')$rotation[,1]),5,endrule='constant'))
     lcl.ev <- as.numeric(runmean(Rle(pca(lcl.xdata,ncomp = 2,center = T,scale = F,logratio = 'none')$rotation[,1]),5,endrule='constant'))
-    
-    covk4me3 <- log2(viewSums(Views(cov[[seqlevels(rbl[[i]])]],IRanges(seq(1,length(cov[[seqlevels(rbl[[i]])]]),binsize),width=binsize)))+1)
-    idx_lcl = covk4me3!=0 & lcl.ev!=0
-    idx_rbl = covk4me3!=0 & rbl.ev!=0
+
+    #i did not integrate chipseq data here
+    #covk4me3 <- log2(viewSums(Views(cov[[seqlevels(rbl[[i]])]],IRanges(seq(1,length(cov[[seqlevels(rbl[[i]])]]),binsize),width=binsize)))+1)
+    #idx_lcl = covk4me3!=0 & lcl.ev!=0
+    #idx_rbl = covk4me3!=0 & rbl.ev!=0
     
     cat(i, cor(covk4me3,lcl.ev), cor(covk4me3[idx_lcl],lcl.ev[idx_lcl]),'\n')
     cat(i, cor(covk4me3,rbl.ev), cor(covk4me3[idx_rbl],rbl.ev[idx_rbl]),'\n')
