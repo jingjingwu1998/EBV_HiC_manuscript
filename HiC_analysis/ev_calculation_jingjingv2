@@ -1,1 +1,205 @@
+#-----------------------------------
+# This script is used to calculate EV value and identify compartment A and B of HiC at 100k resolution.
+# And the generation of the compartment tracks in fig1a, fig1b and fig1c
+#-----------------------------------
+library(HiTC)
+library(rtracklayer)
+library(mixOmics)
+library(IRanges)  # runmean 需要
 
+# 设定输出目录，统一管理所有图和文件
+out_dir <- 'figures/ab_fig_2_lcl_rcl_gcbc'
+dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
+
+# 读取样本数据
+rbl <- importC(
+  'matrix/Day0/iced/100000/Day0_CKDL220009103-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_iced.matrix',
+  xgi.bed = "matrix/Day0/raw/100000/Day0_CKDL220009103-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed",
+  ygi.bed = "matrix/Day0/raw/100000/Day0_CKDL220009103-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed",
+  rm.trans = TRUE
+)
+lcl <- importC(
+  'matrix/Day28/iced/100000/Day28_CKDL220009104-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_iced.matrix',
+  xgi.bed = "matrix/Day28/raw/100000/Day28_CKDL220009104-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed",
+  ygi.bed = "matrix/Day28/raw/100000/Day28_CKDL220009104-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed",
+  rm.trans = TRUE
+)
+gcbc <- importC(
+  'matrix/GCBC/iced/100000/GCBC_merge_read_GRCh37.bwt2pairs_100000_iced.matrix',
+  xgi.bed = "matrix/GCBC/raw/100000/GCBC_merge_read_GRCh37.bwt2pairs_100000_abs.bed",
+  ygi.bed = "matrix/GCBC/raw/100000/GCBC_merge_read_GRCh37.bwt2pairs_100000_abs.bed",
+  rm.trans = TRUE
+)
+
+binsize <- 100000
+
+# 计算EV，符号对齐，NA过滤确保相关计算安全
+EV.rbl <- EV.lcl <- EV.gcbc <- list()
+for(i in 23:1){
+    # RBL处理
+    x <- normPerExpected(rbl[[i]], method="loess", stdev=TRUE)
+    rbl.xdata <- as.matrix(intdata(forceSymmetric(x)))
+    cat("RBL NA ratio chr", seqlevels(rbl[[i]]), ":", sum(is.na(rbl.xdata))/length(rbl.xdata), "\n")
+    rbl.xdata[is.na(rbl.xdata)] <- 0
+    rbl.ev <- as.numeric(runmean(Rle(pca(rbl.xdata, ncomp=2, center=TRUE, scale=FALSE, logratio='none')$rotation[,1]), 5, endrule='constant'))
+
+    # LCL处理
+    y <- normPerExpected(lcl[[i]], method="loess", stdev=TRUE)
+    lcl.xdata <- as.matrix(intdata(forceSymmetric(y)))
+    cat("LCL NA ratio chr", seqlevels(lcl[[i]]), ":", sum(is.na(lcl.xdata))/length(lcl.xdata), "\n")
+    lcl.xdata[is.na(lcl.xdata)] <- 0
+    lcl.ev <- as.numeric(runmean(Rle(pca(lcl.xdata, ncomp=2, center=TRUE, scale=FALSE, logratio='none')$rotation[,1]), 5, endrule='constant'))
+
+    # GCBC处理
+    z <- normPerExpected(gcbc[[i]], method="loess", stdev=TRUE)
+    gcbc.xdata <- as.matrix(intdata(forceSymmetric(z)))
+    cat("GCBC NA ratio chr", seqlevels(gcbc[[i]]), ":", sum(is.na(gcbc.xdata))/length(gcbc.xdata), "\n")
+    gcbc.xdata[is.na(gcbc.xdata)] <- 0
+    gcbc.ev <- as.numeric(runmean(Rle(pca(gcbc.xdata, ncomp=2, center=TRUE, scale=FALSE, logratio='none')$rotation[,1]), 5, endrule='constant'))
+
+    # 符号对齐，确保相关计算只用非NA部分
+    valid_idx_lcl <- which(!is.na(rbl.ev) & !is.na(lcl.ev))
+    if(length(valid_idx_lcl) > 10){
+      if(cor(rbl.ev[valid_idx_lcl], lcl.ev[valid_idx_lcl]) < 0) lcl.ev <- -lcl.ev
+    }
+
+    valid_idx_gcbc <- which(!is.na(rbl.ev) & !is.na(gcbc.ev))
+    if(length(valid_idx_gcbc) > 10){
+      if(cor(rbl.ev[valid_idx_gcbc], gcbc.ev[valid_idx_gcbc]) < 0) gcbc.ev <- -gcbc.ev
+    }
+
+    EV.rbl[[seqlevels(rbl[[i]])]] <- rbl.ev
+    EV.lcl[[seqlevels(lcl[[i]])]] <- lcl.ev
+    EV.gcbc[[seqlevels(gcbc[[i]])]] <- gcbc.ev
+}
+
+# 保存结果
+save(EV.rbl, EV.lcl, EV.gcbc, file=file.path(out_dir, 'ev.100k_multi_samples.rda'))
+
+# 生成A/B区室柱状图
+chroms <- paste0('chr', c(1:22, 'X'))
+for(chr in chroms){
+    pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.pdf')), width=10, height=6)
+    par(mfrow=c(3,1), font.lab=2, cex.lab=1.2, mar=c(0,4,0,0), oma=c(0,0,0,0), mgp=c(2,1,0), xaxs='i', yaxs='i')
+    barplot(EV.rbl[[chr]], col=ifelse(EV.rbl[[chr]] > 0, "red", "blue"), space=0, ylab='RBL EV', ylim=c(-0.12, 0.12))
+    barplot(EV.lcl[[chr]], col=ifelse(EV.lcl[[chr]] > 0, "red", "blue"), space=0, ylab='LCL EV', ylim=c(-0.12, 0.12))
+    barplot(EV.gcbc[[chr]], col=ifelse(EV.gcbc[[chr]] > 0, "red", "blue"), space=0, ylab='GCBC EV', ylim=c(-0.12, 0.12))
+    dev.off()
+}
+
+# EV直方图，分染色体分别保存，防止拥挤
+hist_dir <- file.path(out_dir, 'ev_hist_chrs')
+dir.create(hist_dir, recursive = TRUE, showWarnings = FALSE)
+for(i in seq_along(EV.rbl)){
+  chr_name <- names(EV.rbl)[i]
+  pdf(file = file.path(hist_dir, paste0(chr_name, '_ev_hist.pdf')), width=9, height=12)
+  par(mfrow=c(3,2), font.lab=2, cex.lab=1.2)
+  
+  hist(EV.rbl[[i]], n=50, main=paste0(chr_name, ': RBL'), xlab='EV')
+  hist(EV.lcl[[i]], n=50, main=paste0(chr_name, ': LCL'), xlab='EV')
+  hist(EV.gcbc[[i]], n=50, main=paste0(chr_name, ': GCBC'), xlab='EV')
+  
+  hist(EV.lcl[[i]] - EV.rbl[[i]], n=50, main=paste0(chr_name, ': LCL - RBL'), xlab='EV diff')
+  hist(EV.gcbc[[i]] - EV.rbl[[i]], n=50, main=paste0(chr_name, ': GCBC - RBL'), xlab='EV diff')
+  hist(EV.gcbc[[i]] - EV.lcl[[i]], n=50, main=paste0(chr_name, ': GCBC - LCL'), xlab='EV diff')
+  
+  dev.off()
+}
+
+# EV符号不同区域的直方图，分三组对比
+pdf(file = file.path(out_dir, 'ev.sign_diff_hist.pdf'), width=12, height=92)
+par(mfrow = c(23, 9), font.lab = 2, cex.lab = 1.2)
+
+for(i in seq_along(EV.rbl)){
+  chr_name <- names(EV.rbl)[i]
+
+  idx_rl <- sign(EV.rbl[[i]]) != sign(EV.lcl[[i]])
+  hist(EV.rbl[[i]][idx_rl], n=50, main=paste0(chr_name, ': RBL (vs LCL sign diff)'))
+  hist(EV.lcl[[i]][idx_rl], n=50, main=paste0(chr_name, ': LCL (vs RBL sign diff)'))
+  hist(EV.lcl[[i]][idx_rl] - EV.rbl[[i]][idx_rl], n=50, main=paste0(chr_name, ': LCL - RBL (sign diff)'))
+
+  idx_rg <- sign(EV.rbl[[i]]) != sign(EV.gcbc[[i]])
+  hist(EV.rbl[[i]][idx_rg], n=50, main=paste0(chr_name, ': RBL (vs GCBC sign diff)'))
+  hist(EV.gcbc[[i]][idx_rg], n=50, main=paste0(chr_name, ': GCBC (vs RBL sign diff)'))
+  hist(EV.gcbc[[i]][idx_rg] - EV.rbl[[i]][idx_rg], n=50, main=paste0(chr_name, ': GCBC - RBL (sign diff)'))
+
+  idx_lg <- sign(EV.lcl[[i]]) != sign(EV.gcbc[[i]])
+  hist(EV.lcl[[i]][idx_lg], n=50, main=paste0(chr_name, ': LCL (vs GCBC sign diff)'))
+  hist(EV.gcbc[[i]][idx_lg], n=50, main=paste0(chr_name, ': GCBC (vs LCL sign diff)'))
+  hist(EV.gcbc[[i]][idx_lg] - EV.lcl[[i]][idx_lg], n=50, main=paste0(chr_name, ': GCBC - LCL (sign diff)'))
+}
+dev.off()
+
+# 全染色体所有bin EV差异核密度图
+EV_diff_all <- list(
+  LCL_RBL = c(),
+  GCBC_RBL = c(),
+  GCBC_LCL = c()
+)
+
+for(i in seq_along(EV.rbl)){
+  EV_diff_all$LCL_RBL <- c(EV_diff_all$LCL_RBL, EV.lcl[[i]] - EV.rbl[[i]])
+  EV_diff_all$GCBC_RBL <- c(EV_diff_all$GCBC_RBL, EV.gcbc[[i]] - EV.rbl[[i]])
+  EV_diff_all$GCBC_LCL <- c(EV_diff_all$GCBC_LCL, EV.gcbc[[i]] - EV.lcl[[i]])
+}
+
+pdf(file = file.path(out_dir, 'ev.in_de.multi_samples.pdf'), width=12, height=6)
+plot(density(EV_diff_all$LCL_RBL), main='Density of EV Difference: LCL - RBL', xlab='EV Difference')
+abline(v=0, lty="dashed")
+plot(density(EV_diff_all$GCBC_RBL), main='Density of EV Difference: GCBC - RBL', xlab='EV Difference')
+abline(v=0, lty="dashed")
+plot(density(EV_diff_all$GCBC_LCL), main='Density of EV Difference: GCBC - LCL', xlab='EV Difference')
+abline(v=0, lty="dashed")
+dev.off()
+
+# MA图，三组样本两两对比
+pdf(file = file.path(out_dir, 'ev.ma.multi_samples.pdf'), width=12, height=92)
+par(mfrow = c(23, 9), font.lab = 2, cex.lab = 1.2)
+
+for(i in seq_along(EV.rbl)){
+  chr_name <- names(EV.rbl)[i]
+
+  EV_diff <- EV.lcl[[i]] - EV.rbl[[i]]
+  EV_mean <- (EV.rbl[[i]] + EV.lcl[[i]]) / 2
+  plot(EV_mean, EV_diff, pch=16, cex=0.25, main=paste0(chr_name, ': LCL vs RBL'), xlab='Mean EV', ylab='Diff EV')
+  abline(h=0, lty="dashed")
+
+  EV_diff <- EV.gcbc[[i]] - EV.rbl[[i]]
+  EV_mean <- (EV.rbl[[i]] + EV.gcbc[[i]]) / 2
+  plot(EV_mean, EV_diff, pch=16, cex=0.25, main=paste0(chr_name, ': GCBC vs RBL'), xlab='Mean EV', ylab='Diff EV')
+  abline(h=0, lty="dashed")
+
+  EV_diff <- EV.gcbc[[i]] - EV.lcl[[i]]
+  EV_mean <- (EV.lcl[[i]] + EV.gcbc[[i]]) / 2
+  plot(EV_mean, EV_diff, pch=16, cex=0.25, main=paste0(chr_name, ': GCBC vs LCL'), xlab='Mean EV', ylab='Diff EV')
+  abline(h=0, lty="dashed")
+}
+dev.off()
+
+# chr17 染色体示例绘图
+chr = 'chr17'
+idx = as.integer((3.35e+7 / 1e+5 + 1):(4.9e+7 / 1e+5))
+EV.rbl.chr = EV.rbl[[chr]][idx]
+EV.lcl.chr = EV.lcl[[chr]][idx]
+EV.gcbc.chr = EV.gcbc[[chr]][idx]
+
+pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.examp.pdf')), width=6, height=6)
+par(mfrow = c(3,1), font.lab=2, cex.lab=1.2, lty=0, mar=c(0,4,0,0), oma=c(0,0,0,0), mgp=c(2,1,0), xaxs='i', yaxs='i')
+barplot(EV.rbl.chr, col=ifelse(EV.rbl.chr > 0, "red", "blue"), space=0, ylab='RBL EV', ylim=c(-0.05, 0.05))
+barplot(EV.lcl.chr, col=ifelse(EV.lcl.chr > 0, "red", "blue"), space=0, ylab='LCL EV', ylim=c(-0.05, 0.05))
+barplot(EV.gcbc.chr, col=ifelse(EV.gcbc.chr > 0, "red", "blue"), space=0, ylab='GCBC EV', ylim=c(-0.05, 0.05))
+dev.off()
+
+# chr3 染色体示例绘图
+chr = 'chr3'
+idx = as.integer((1.2e+8 / 1e+5 + 1):(1.44e+8 / 1e+5))
+EV.rbl.chr = EV.rbl[[chr]][idx]
+EV.lcl.chr = EV.lcl[[chr]][idx]
+EV.gcbc.chr = EV.gcbc[[chr]][idx]
+
+pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.examp.pdf')), width=10, height=6)
+par(mfrow = c(3,1), font.lab=2, cex.lab=1.2, lty=0, mar=c(0,4,0,0), oma=c(0,0,0,0), mgp=c(2,1,0), xaxs='i', yaxs='i')
+barplot(EV.rbl.chr, col=ifelse(EV.rbl.chr > 0, "red", "blue"), space=0, ylab='RBL EV', ylim=c(-0.05, 0.05))
+barplot(EV.lcl.chr, col=ifelse(EV.lcl.chr > 0, "red", "blue"), space=0, ylab='LCL EV', ylim=c(-0.05, 0.05))
+barplot(EV.gcbc.chr, col=ifelse(EV.gcbc.chr > 0, "red", "blue"), space=0, ylab='GCBC EV', ylim=c(-0.05, 0.05))
+dev.off()
