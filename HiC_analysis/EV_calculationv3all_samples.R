@@ -341,12 +341,12 @@ dev.off()
 # chr17 染色体示例绘图
 chr = 'chr17'
 idx = as.integer((3.35e+7 / 1e+5 + 1):(4.9e+7 / 1e+5))
-EV.rbl.chr = EV.rbl[[chr]][idx]
-EV.lcl.chr = EV.lcl[[chr]][idx]
-EV.gcbc.chr = EV.gcbc[[chr]][idx]
-EV.mbc.chr = EV.mbc[[chr]][idx]
-EV.nbc.chr = EV.nbc[[chr]][idx]
-EV.pc.chr = EV.pc[[chr]][idx]
+EV.rbl.chr = -EV.rbl[[chr]][idx]
+EV.lcl.chr = -EV.lcl[[chr]][idx]
+EV.gcbc.chr = -EV.gcbc[[chr]][idx]
+EV.mbc.chr = -EV.mbc[[chr]][idx]
+EV.nbc.chr = -EV.nbc[[chr]][idx]
+EV.pc.chr = -EV.pc[[chr]][idx]
 
 pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.examp.pdf')), width=6, height=12)  # 高度加大以容纳6个样本
 par(mfrow = c(6,1), font.lab=2, cex.lab=1.2, lty=0, mar=c(0,4,0,0), oma=c(0,0,0,0), mgp=c(2,1,0), xaxs='i', yaxs='i')
@@ -361,12 +361,12 @@ dev.off()
 # chr3 染色体示例绘图
 chr = 'chr3'
 idx = as.integer((1.2e+8 / 1e+5 + 1):(1.44e+8 / 1e+5))
-EV.rbl.chr = EV.rbl[[chr]][idx]
-EV.lcl.chr = EV.lcl[[chr]][idx]
-EV.gcbc.chr = EV.gcbc[[chr]][idx]
-EV.mbc.chr = EV.mbc[[chr]][idx]
-EV.nbc.chr = EV.nbc[[chr]][idx]
-EV.pc.chr = EV.pc[[chr]][idx]
+EV.rbl.chr = -EV.rbl[[chr]][idx]
+EV.lcl.chr = -EV.lcl[[chr]][idx]
+EV.gcbc.chr = -EV.gcbc[[chr]][idx]
+EV.mbc.chr = -EV.mbc[[chr]][idx]
+EV.nbc.chr = -EV.nbc[[chr]][idx]
+EV.pc.chr = -EV.pc[[chr]][idx]
 
 pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.examp.pdf')), width=10, height=12)
 par(mfrow = c(6,1), font.lab=2, cex.lab=1.2, lty=0, mar=c(0,4,0,0), oma=c(0,0,0,0), mgp=c(2,1,0), xaxs='i', yaxs='i')
