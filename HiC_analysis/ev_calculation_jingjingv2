@@ -81,9 +81,9 @@ chroms <- paste0('chr', c(1:22, 'X'))
 for(chr in chroms){
     pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.pdf')), width=10, height=6)
     par(mfrow=c(3,1), font.lab=2, cex.lab=1.2, mar=c(0,4,0,0), oma=c(0,0,0,0), mgp=c(2,1,0), xaxs='i', yaxs='i')
-    barplot(EV.rbl[[chr]], col=ifelse(EV.rbl[[chr]] > 0, "red", "blue"), space=0, ylab='RBL EV', ylim=c(-0.12, 0.12))
-    barplot(EV.lcl[[chr]], col=ifelse(EV.lcl[[chr]] > 0, "red", "blue"), space=0, ylab='LCL EV', ylim=c(-0.12, 0.12))
-    barplot(EV.gcbc[[chr]], col=ifelse(EV.gcbc[[chr]] > 0, "red", "blue"), space=0, ylab='GCBC EV', ylim=c(-0.12, 0.12))
+    barplot(EV.rbl[[chr]], col = ifelse(EV.rbl[[chr]] > 0,"red","blue"),space = 0,ylab='RBL EV',ylim=c(-0.12,0.12))
+    barplot(EV.lcl[[chr]], col = ifelse(EV.lcl[[chr]] > 0,"red","blue"),space = 0,ylab='LCL EV',ylim=c(-0.12,0.12))
+    barplot(EV.gcbc[[chr]], col = ifelse(EV.gcbc[[chr]] > 0, "red", "blue"), space=0, ylab='GCBC EV', ylim=c(-0.12, 0.12))
     dev.off()
 }
 
@@ -159,19 +159,39 @@ par(mfrow = c(23, 9), font.lab = 2, cex.lab = 1.2)
 for(i in seq_along(EV.rbl)){
   chr_name <- names(EV.rbl)[i]
 
+  # LCL vs RBL
   EV_diff <- EV.lcl[[i]] - EV.rbl[[i]]
   EV_mean <- (EV.rbl[[i]] + EV.lcl[[i]]) / 2
-  plot(EV_mean, EV_diff, pch=16, cex=0.25, main=paste0(chr_name, ': LCL vs RBL'), xlab='Mean EV', ylab='Diff EV')
+
+  # 计算x轴范围：中点 ± 1.5倍半宽度 = 3倍宽度
+  x_mid <- mean(range(EV_mean, na.rm=TRUE))
+  x_half_width <- diff(range(EV_mean, na.rm=TRUE)) / 2
+  xlim_expanded <- c(x_mid - 1.5 * x_half_width, x_mid + 1.5 * x_half_width)
+
+  plot(EV_mean, EV_diff, pch=16, cex=0.25, main=paste0(chr_name, ': LCL vs RBL'),
+       xlab='Mean EV', ylab='Diff EV', xlim=xlim_expanded)
   abline(h=0, lty="dashed")
 
+  # GCBC vs RBL
   EV_diff <- EV.gcbc[[i]] - EV.rbl[[i]]
   EV_mean <- (EV.rbl[[i]] + EV.gcbc[[i]]) / 2
-  plot(EV_mean, EV_diff, pch=16, cex=0.25, main=paste0(chr_name, ': GCBC vs RBL'), xlab='Mean EV', ylab='Diff EV')
+  x_mid <- mean(range(EV_mean, na.rm=TRUE))
+  x_half_width <- diff(range(EV_mean, na.rm=TRUE)) / 2
+  xlim_expanded <- c(x_mid - 1.5 * x_half_width, x_mid + 1.5 * x_half_width)
+
+  plot(EV_mean, EV_diff, pch=16, cex=0.25, main=paste0(chr_name, ': GCBC vs RBL'),
+       xlab='Mean EV', ylab='Diff EV', xlim=xlim_expanded)
   abline(h=0, lty="dashed")
 
+  # GCBC vs LCL
   EV_diff <- EV.gcbc[[i]] - EV.lcl[[i]]
   EV_mean <- (EV.lcl[[i]] + EV.gcbc[[i]]) / 2
-  plot(EV_mean, EV_diff, pch=16, cex=0.25, main=paste0(chr_name, ': GCBC vs LCL'), xlab='Mean EV', ylab='Diff EV')
+  x_mid <- mean(range(EV_mean, na.rm=TRUE))
+  x_half_width <- diff(range(EV_mean, na.rm=TRUE)) / 2
+  xlim_expanded <- c(x_mid - 1.5 * x_half_width, x_mid + 1.5 * x_half_width)
+
+  plot(EV_mean, EV_diff, pch=16, cex=0.25, main=paste0(chr_name, ': GCBC vs LCL'),
+       xlab='Mean EV', ylab='Diff EV', xlim=xlim_expanded)
   abline(h=0, lty="dashed")
 }
 dev.off()
@@ -203,3 +223,4 @@ barplot(EV.rbl.chr, col=ifelse(EV.rbl.chr > 0, "red", "blue"), space=0, ylab='RB
 barplot(EV.lcl.chr, col=ifelse(EV.lcl.chr > 0, "red", "blue"), space=0, ylab='LCL EV', ylim=c(-0.05, 0.05))
 barplot(EV.gcbc.chr, col=ifelse(EV.gcbc.chr > 0, "red", "blue"), space=0, ylab='GCBC EV', ylim=c(-0.05, 0.05))
 dev.off()
+
