@@ -178,15 +178,18 @@ for(i in seq_along(EV.rbl)){
 }
 dev.off()
 
-
 # EV histogram: pairwise comparison across all samples (where signs differ)
-# This will generate (N * (N-1) / 2) * 3 plots per chromosome for N samples
-# For 6 samples, this is (6*5/2) * 3 = 15 * 3 = 45 plots per chromosome
-# Total plots: 45 * 23 chromosomes = 1035 plots. This PDF will be VERY large.
-pdf(file = file.path(out_dir, 'ev.hist_pairwise_diff_signs.pdf'), width = 12, height = length(chroms) * (length(sample_names) * (length(sample_names) - 1) / 2) * 1.5)
-par(mfrow=c(length(chroms), (length(sample_names) * (length(sample_names) - 1) / 2) * 3), font.lab=2, cex.lab=1.2) # Adjusting columns for pairwise plots
+# This will now generate a separate PDF for each chromosome.
+# Each PDF will contain (N * (N-1) / 2) * 3 plots for N samples.
+# For 6 samples, this is 15 * 3 = 45 plots per chromosome PDF.
 for(i in seq_along(chroms)){ # Loop through chromosomes
     chr <- chroms[i]
+    pdf(file = file.path(out_dir, paste0(chr, '.ev.hist_pairwise_diff_signs.pdf')), width = 18, height = 24) # Increased dimensions for better visibility
+    # Calculate num_pairs outside loop for accurate par(mfrow)
+    num_pairs <- length(sample_names) * (length(sample_names) - 1) / 2
+    # Set mfrow to accommodate 3 plots per pair, for all pairs in a row
+    par(mfrow=c(num_pairs, 3), font.lab=2, cex.lab=1.2) # Adjusting rows and columns for pairwise plots
+    
     # Pairwise comparison loops
     for (s1_idx in 1:(length(sample_names) - 1)) {
         for (s2_idx in (s1_idx + 1):length(sample_names)) {
@@ -198,12 +201,12 @@ for(i in seq_along(chroms)){ # Loop through chromosomes
 
             # Find indices where signs differ between the two samples
             idx_diff_sign <- sign(ev1) != sign(ev2)
-
+            
             # Check if there are enough points with differing signs to plot
             if (sum(idx_diff_sign, na.rm = TRUE) > 0) {
-                hist(ev1[idx_diff_sign], n=50, main=paste0(chr, ': ', sample1_name, ' (', sample2_name, ' diff sign)'))
-                hist(ev2[idx_diff_sign], n=50, main=paste0(chr, ': ', sample2_name, ' (', sample1_name, ' diff sign)'))
-                hist(ev2[idx_diff_sign] - ev1[idx_diff_sign], n=50, main=paste0(chr, ': ', sample2_name, '-', sample1_name, ' (diff sign)'))
+                hist(ev1[idx_diff_sign], n=50, main=paste0(chr, ': ', sample1_name, ' (', sample2_name, ' diff)'))
+                hist(ev2[idx_diff_sign], n=50, main=paste0(chr, ': ', sample2_name, ' (', sample1_name, ' diff)'))
+                hist(ev2[idx_diff_sign] - ev1[idx_diff_sign], n=50, main=paste0(chr, ': ', sample2_name, '-', sample1_name, ' Diff'))
             } else {
                 # Plot empty histograms or a placeholder if no differing signs for that pair/chr
                 plot(NA, xlim=c(0,1), ylim=c(0,1), type="n", xlab="", ylab="", main=paste0(chr, ': ', sample1_name, '-', sample2_name, ' (No diff signs)'))
@@ -212,27 +215,33 @@ for(i in seq_along(chroms)){ # Loop through chromosomes
             }
         }
     }
+    dev.off()
 }
-dev.off()
 
 
 # MA plot: pairwise comparison across all samples
-# Total plots: (N * (N-1) / 2) * 23 chromosomes = 15 * 23 = 345 plots.
-pdf(file = file.path(out_dir, 'ev.ma_pairwise_plots.pdf'), width = 12, height = length(chroms) * (length(sample_names) * (length(sample_names) - 1) / 2)) # Adjust height
-par(mfrow=c(length(chroms), (length(sample_names) * (length(sample_names) - 1) / 2)), font.lab=2, cex.lab=1.2)
+# This will now generate a separate PDF for each chromosome.
+# Each PDF will contain (N * (N-1) / 2) plots for N samples.
+# For 6 samples, this is 15 plots per chromosome PDF.
 for(i in seq_along(chroms)){ # Loop through chromosomes
     chr <- chroms[i]
+    pdf(file = file.path(out_dir, paste0(chr, '.ev.ma_pairwise_plots.pdf')), width = 15, height = 20) # Increased dimensions for better visibility
+    # Calculate num_pairs outside loop for accurate par(mfrow)
+    num_pairs <- length(sample_names) * (length(sample_names) - 1) / 2
+    # Set mfrow to accommodate 1 plot per pair, for all pairs in a column
+    par(mfrow=c(num_pairs, 1), font.lab=2, cex.lab=1.2) # Adjusting rows and columns for pairwise plots
+    
     for (s1_idx in 1:(length(sample_names) - 1)) {
         for (s2_idx in (s1_idx + 1):length(sample_names)) {
             sample1_name <- sample_names[s1_idx]
             sample2_name <- sample_names[s2_idx]
 
             ev1 <- all_ev_lists[[sample1_name]][[chr]]
-            ev2 <- all_ev_lists[[sample2_name]][[chr]]
+            ev2 <- all_ev_lists[[sample2_names]][[chr]]
 
             # Ensure both EV vectors are of the same length and contain valid numbers
             common_idx <- which(!is.na(ev1) & !is.na(ev2))
-
+            
             if (length(common_idx) > 0) {
                 EV_diff <- ev2[common_idx] - ev1[common_idx]
                 EV_mean <- (ev1[common_idx] + ev2[common_idx]) / 2
@@ -246,8 +255,8 @@ for(i in seq_along(chroms)){ # Loop through chromosomes
             }
         }
     }
+    dev.off()
 }
-dev.off()
 
 # sign flipped: all samples (density plot of differences for sign-flipped bins)
 # This will now include differences for ALL pairwise sample combinations where signs flip.
