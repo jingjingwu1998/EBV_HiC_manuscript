@@ -1,4 +1,4 @@
-ce1#-----------------------------------
+#-----------------------------------
 # This script is used to calculate EV value and identify compartment A and B of HiC at 100k resolution.
 # And the generation of the compartment tracks in fig1a,fig1b and fig1c
 #-----------------------------------
