@@ -5,7 +5,7 @@
 library(HiTC)
 library(rtracklayer)
 library(mixOmics)
-library(IRanges)  # runmean 需要
+library(IRanges)  # runmean 
 
 # output
 out_dir <- 'figures/ab_fig_2_multi_samples_EVsign'
@@ -56,7 +56,7 @@ pc <- importC(
 
 binsize <- 100000
 
-# 手动设定RBL每条染色体EV的符号
+# manually set up EV sign
 manual_sign_rbl <- list(
   chr1 = +1, 
   chr2 = -1, 
@@ -92,53 +92,57 @@ EV.nbc <- list()
 EV.pc <- list()
 
 for(i in 23:1){
-    # RBL处理
+    # RBL
     x <- normPerExpected(rbl[[i]], method="loess", stdev=TRUE)
     rbl.xdata <- as.matrix(intdata(forceSymmetric(x)))
     cat("RBL NA ratio chr", seqlevels(rbl[[i]]), ":", sum(is.na(rbl.xdata))/length(rbl.xdata), "\n")
-    rbl.xdata[is.na(rbl.xdata)] <- 0
-    rbl.ev <- as.numeric(runmean(Rle(pca(rbl.xdata, ncomp=2, center=TRUE, scale=FALSE, logratio='none')$rotation[,1]), 5, endrule='constant'))
-    # 加入手动符号翻转
+    rbl.xdata[is.na(rbl.xdata)] = 0
+    rbl.ev <- as.numeric(runmean(Rle(pca(rbl.xdata,ncomp = 2,center = T,scale = F,logratio = 'none')$rotation[,1]),5,endrule='constant'))
+
+  
+    # manually flip signs
     chr <- seqlevels(rbl[[i]])
     sign_factor <- ifelse(!is.null(manual_sign_rbl[[chr]]), manual_sign_rbl[[chr]], 1)
     rbl.ev <- rbl.ev * sign_factor
 
-    # LCL处理
+  
+
+    # LCL
     y <- normPerExpected(lcl[[i]], method="loess", stdev=TRUE)
     lcl.xdata <- as.matrix(intdata(forceSymmetric(y)))
     cat("LCL NA ratio chr", seqlevels(lcl[[i]]), ":", sum(is.na(lcl.xdata))/length(lcl.xdata), "\n")
-    lcl.xdata[is.na(lcl.xdata)] <- 0
-    lcl.ev <- as.numeric(runmean(Rle(pca(lcl.xdata, ncomp=2, center=TRUE, scale=FALSE, logratio='none')$rotation[,1]), 5, endrule='constant'))
+    lcl.xdata[is.na(lcl.xdata)] = 0
+    lcl.ev <- as.numeric(runmean(Rle(pca(lcl.xdata,ncomp = 2,center = T,scale = F,logratio = 'none')$rotation[,1]),5,endrule='constant'))
 
-    # GCBC处理
+    # GCBC
     z <- normPerExpected(gcbc[[i]], method="loess", stdev=TRUE)
     gcbc.xdata <- as.matrix(intdata(forceSymmetric(z)))
     cat("GCBC NA ratio chr", seqlevels(gcbc[[i]]), ":", sum(is.na(gcbc.xdata))/length(gcbc.xdata), "\n")
-    gcbc.xdata[is.na(gcbc.xdata)] <- 0
-    gcbc.ev <- as.numeric(runmean(Rle(pca(gcbc.xdata, ncomp=2, center=TRUE, scale=FALSE, logratio='none')$rotation[,1]), 5, endrule='constant'))
+    gcbc.xdata[is.na(lcl.xdata)] = 0
+    gcbc.ev <- as.numeric(runmean(Rle(pca(gcbc.xdata,ncomp = 2,center = T,scale = F,logratio = 'none')$rotation[,1]),5,endrule='constant'))
 
-    # MBC处理
+    # MBC
     m <- normPerExpected(mbc[[i]], method="loess", stdev=TRUE)
     mbc.xdata <- as.matrix(intdata(forceSymmetric(m)))
     cat("MBC NA ratio chr", seqlevels(mbc[[i]]), ":", sum(is.na(mbc.xdata)) / length(mbc.xdata), "\n")
-    mbc.xdata[is.na(mbc.xdata)] <- 0
-    mbc.ev <- as.numeric(runmean(Rle(pca(mbc.xdata, ncomp=2, center=TRUE, scale=FALSE, logratio='none')$rotation[,1]), 5, endrule='constant'))
+    mbc.xdata[is.na(mbc.xdata)] = 0
+    mbc.ev <- as.numeric(runmean(Rle(pca(mbc.xdata,ncomp = 2,center = T,scale = F,logratio = 'none')$rotation[,1]),5,endrule='constant'))
 
-    # NBC处理
+    # NBC
     n <- normPerExpected(nbc[[i]], method="loess", stdev=TRUE)
     nbc.xdata <- as.matrix(intdata(forceSymmetric(n)))
     cat("NBC NA ratio chr", seqlevels(nbc[[i]]), ":", sum(is.na(nbc.xdata)) / length(nbc.xdata), "\n")
-    nbc.xdata[is.na(nbc.xdata)] <- 0
-    nbc.ev <- as.numeric(runmean(Rle(pca(nbc.xdata, ncomp=2, center=TRUE, scale=FALSE, logratio='none')$rotation[,1]), 5, endrule='constant'))
-
-    # PC处理
+    nbc.xdata[is.na(lcl.xdata)] = 0
+    nbc.ev <- as.numeric(runmean(Rle(pca(nbc.xdata,ncomp = 2,center = T,scale = F,logratio = 'none')$rotation[,1]),5,endrule='constant'))
+  
+    # PC
     p <- normPerExpected(pc[[i]], method="loess", stdev=TRUE)
     pc.xdata <- as.matrix(intdata(forceSymmetric(p)))
     cat("PC NA ratio chr", seqlevels(pc[[i]]), ":", sum(is.na(pc.xdata)) / length(pc.xdata), "\n")
-    pc.xdata[is.na(pc.xdata)] <- 0
-    pc.ev <- as.numeric(runmean(Rle(pca(pc.xdata, ncomp=2, center=TRUE, scale=FALSE, logratio='none')$rotation[,1]), 5, endrule='constant'))
-
-    # 符号对齐，以RBL为基准，逐个翻转其他样本
+    pc.xdata[is.na(lcl.xdata)] = 0
+    pc.ev <- as.numeric(runmean(Rle(pca(gcbc.xdata,ncomp = 2,center = T,scale = F,logratio = 'none')$rotation[,1]),5,endrule='constant'))
+  
+    # flig signs based on RBL data
     valid_idx_lcl <- which(!is.na(rbl.ev) & !is.na(lcl.ev))
     if(length(valid_idx_lcl) > 10 && cor(rbl.ev[valid_idx_lcl], lcl.ev[valid_idx_lcl], use="complete.obs") < 0) lcl.ev <- -lcl.ev
 
@@ -163,10 +167,13 @@ for(i in 23:1){
 }
 
 
-# 保存结果
+# save
 save(EV.rbl, EV.lcl, EV.gcbc, EV.mbc, EV.nbc, EV.pc, file=file.path(out_dir, 'ev.100k_multi_samples.rda'))
 
-# 生成A/B区室柱状图
+load('ev.100k_remove_0.rda')
+
+
+# generate compartment a and b figures
 chroms <- paste0('chr', c(1:22, 'X'))
 for(chr in chroms){
     pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.pdf')), width=10, height=12)  # 高度适当加大以容纳6行图
