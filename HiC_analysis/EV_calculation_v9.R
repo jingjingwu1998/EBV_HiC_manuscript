@@ -302,45 +302,42 @@ abline(v=0,lty="dashed")
 dev.off()
 
 
-# --- Specific Chromosome Compartment Examples (fig1a, fig1b) ---
-# fig1b: chr17 compartments (now showing all samples)
+# chr17 染色体示例绘图
 chr = 'chr17'
-idx = (3.35e+7/1e+5 + 1):(4.9e+7/1e+5)
-# Accessing the specific subsets for each sample
-EV.rbl.chr = EV.rbl[[chr]][idx]
-EV.lcl.chr = EV.lcl[[chr]][idx]
-EV.gcbc.chr = EV.gcbc[[chr]][idx]
-EV.mbc.chr = EV.mbc[[chr]][idx]
-EV.nbc.chr = EV.nbc[[chr]][idx]
-EV.pc.chr = EV.pc[[chr]][idx]
+idx = as.integer((3.35e+7 / 1e+5 + 1):(4.9e+7 / 1e+5))
+EV.rbl.chr = -EV.rbl[[chr]][idx]
+EV.lcl.chr = -EV.lcl[[chr]][idx]
+EV.gcbc.chr = -EV.gcbc[[chr]][idx]
+EV.mbc.chr = -EV.mbc[[chr]][idx]
+EV.nbc.chr = -EV.nbc[[chr]][idx]
+EV.pc.chr = -EV.pc[[chr]][idx]
 
-pdf(file.path(out_dir, paste0(chr,'.tad.ab.examp.pdf')),width=6,height=9) # Adjusted height for 6 plots
-par(mfrow=c(6,1),font.lab=2,cex.lab=1.2,lty = 0,mar=c(0,4,0,0),oma = c(0,0,0,0),mgp = c(2, 1, 0),xaxs='i', yaxs='i')
-barplot(EV.rbl.chr, col = ifelse(EV.rbl.chr > 0,"red","blue"),space = 0,ylab='RBL EV',ylim=c(-0.05,0.05), main = paste0(chr, " Compartments (Subset)"))
-barplot(EV.lcl.chr, col = ifelse(EV.lcl.chr > 0,"red","blue"),space = 0,ylab='LCL EV',ylim=c(-0.05,0.05))
-barplot(EV.gcbc.chr, col = ifelse(EV.gcbc.chr > 0,"red","blue"),space = 0,ylab='GCBC EV',ylim=c(-0.05,0.05))
-barplot(EV.mbc.chr, col = ifelse(EV.mbc.chr > 0,"red","blue"),space = 0,ylab='MBC EV',ylim=c(-0.05,0.05))
-barplot(EV.nbc.chr, col = ifelse(EV.nbc.chr > 0,"red","blue"),space = 0,ylab='NBC EV',ylim=c(-0.05,0.05))
-barplot(EV.pc.chr, col = ifelse(EV.pc.chr > 0,"red","blue"),space = 0,ylab='PC EV',ylim=c(-0.05,0.05))
+pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.examp.pdf')), width=6, height=12)  # 高度加大以容纳6个样本
+par(mfrow = c(6,1), font.lab=2, cex.lab=1.2, lty=0, mar=c(0,4,0,0), oma=c(0,0,0,0), mgp=c(2,1,0), xaxs='i', yaxs='i')
+barplot(EV.rbl.chr, col=ifelse(EV.rbl.chr > 0, "red", "blue"), space=0, ylab='RBL EV', ylim=c(-0.05, 0.05))
+barplot(EV.lcl.chr, col=ifelse(EV.lcl.chr > 0, "red", "blue"), space=0, ylab='LCL EV', ylim=c(-0.05, 0.05))
+barplot(EV.gcbc.chr, col=ifelse(EV.gcbc.chr > 0, "red", "blue"), space=0, ylab='GCBC EV', ylim=c(-0.05, 0.05))
+barplot(EV.mbc.chr, col=ifelse(EV.mbc.chr > 0, "red", "blue"), space=0, ylab='MBC EV', ylim=c(-0.05, 0.05))
+barplot(EV.nbc.chr, col=ifelse(EV.nbc.chr > 0, "red", "blue"), space=0, ylab='NBC EV', ylim=c(-0.05, 0.05))
+barplot(EV.pc.chr,  col=ifelse(EV.pc.chr  > 0, "red", "blue"), space=0, ylab='PC EV',  ylim=c(-0.05, 0.05))
 dev.off()
 
-# fig1a: chr3 compartments (now showing all samples)
+# chr3 染色体示例绘图
 chr = 'chr3'
-idx = (1.2e+8/1e+5 + 1):(1.44e+8/1e+5)
-# Accessing the specific subsets for each sample
-EV.rbl.chr = EV.rbl[[chr]][idx]
-EV.lcl.chr = EV.lcl[[chr]][idx]
-EV.gcbc.chr = EV.gcbc[[chr]][idx]
-EV.mbc.chr = EV.mbc[[chr]][idx]
-EV.nbc.chr = EV.nbc[[chr]][idx]
-EV.pc.chr = EV.pc[[chr]][idx]
+idx = as.integer((1.2e+8 / 1e+5 + 1):(1.44e+8 / 1e+5))
+EV.rbl.chr = -EV.rbl[[chr]][idx]
+EV.lcl.chr = -EV.lcl[[chr]][idx]
+EV.gcbc.chr = -EV.gcbc[[chr]][idx]
+EV.mbc.chr = -EV.mbc[[chr]][idx]
+EV.nbc.chr = -EV.nbc[[chr]][idx]
+EV.pc.chr = -EV.pc[[chr]][idx]
 
-pdf(file.path(out_dir, paste0(chr,'.tad.ab.examp.pdf')),width=10,height=9) # Adjusted height for 6 plots
-par(mfrow=c(6,1),font.lab=2,cex.lab=1.2,lty = 0,mar=c(0,4,0,0),oma = c(0,0,0,0),mgp = c(2, 1, 0),xaxs='i', yaxs='i')
-barplot(EV.rbl.chr, col = ifelse(EV.rbl.chr > 0,"red","blue"),space = 0,ylab='RBL EV',ylim=c(-0.05,0.05), main = paste0(chr, " Compartments (Subset)"))
-barplot(EV.lcl.chr, col = ifelse(EV.lcl.chr > 0,"red","blue"),space = 0,ylab='LCL EV',ylim=c(-0.05,0.05))
-barplot(EV.gcbc.chr, col = ifelse(EV.gcbc[[chr]] > 0,"red","blue"),space = 0,ylab='GCBC EV',ylim=c(-0.05,0.05))
-barplot(EV.mbc.chr, col = ifelse(EV.mbc[[chr]] > 0,"red","blue"),space = 0,ylab='MBC EV',ylim=c(-0.05,0.05))
-barplot(EV.nbc.chr, col = ifelse(EV.nbc[[chr]] > 0,"red","blue"),space = 0,ylab='NBC EV',ylim=c(-0.05,0.05))
-barplot(EV.pc.chr, col = ifelse(EV.pc[[chr]] > 0,"red","blue"),space = 0,ylab='PC EV',ylim=c(-0.05,0.05))
+pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.examp.pdf')), width=10, height=12)
+par(mfrow = c(6,1), font.lab=2, cex.lab=1.2, lty=0, mar=c(0,4,0,0), oma=c(0,0,0,0), mgp=c(2,1,0), xaxs='i', yaxs='i')
+barplot(EV.rbl.chr, col=ifelse(EV.rbl.chr > 0, "red", "blue"), space=0, ylab='RBL EV', ylim=c(-0.05, 0.05))
+barplot(EV.lcl.chr, col=ifelse(EV.lcl.chr > 0, "red", "blue"), space=0, ylab='LCL EV', ylim=c(-0.05, 0.05))
+barplot(EV.gcbc.chr, col=ifelse(EV.gcbc.chr > 0, "red", "blue"), space=0, ylab='GCBC EV', ylim=c(-0.05, 0.05))
+barplot(EV.mbc.chr, col=ifelse(EV.mbc.chr > 0, "red", "blue"), space=0, ylab='MBC EV', ylim=c(-0.05, 0.05))
+barplot(EV.nbc.chr, col=ifelse(EV.nbc.chr > 0, "red", "blue"), space=0, ylab='NBC EV', ylim=c(-0.05, 0.05))
+barplot(EV.pc.chr,  col=ifelse(EV.pc.chr  > 0, "red", "blue"), space=0, ylab='PC EV',  ylim=c(-0.05, 0.05))
 dev.off()
