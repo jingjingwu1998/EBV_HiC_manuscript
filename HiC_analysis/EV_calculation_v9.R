@@ -237,7 +237,7 @@ for(i in seq_along(chroms)){ # Loop through chromosomes
             sample2_name <- sample_names[s2_idx]
 
             ev1 <- all_ev_lists[[sample1_name]][[chr]]
-            ev2 <- all_ev_lists[[sample2_names]][[chr]]
+            ev2 <- all_ev_lists[[sample2_name]][[chr]]
 
             # Ensure both EV vectors are of the same length and contain valid numbers
             common_idx <- which(!is.na(ev1) & !is.na(ev2))
