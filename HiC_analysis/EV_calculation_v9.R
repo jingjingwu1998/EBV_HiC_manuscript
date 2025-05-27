@@ -8,7 +8,7 @@ library(mixOmics)
 library(IRanges) # Added for runmean
 
 # output directory
-out_dir <- 'figures/ab_fig_2_multi_samples_v9' # Changed output directory to differentiate
+out_dir <- 'figures/ab_fig_2_multi_samples_final' # Changed output directory to differentiate
 dir.create(out_dir, recursive = TRUE, showWarnings = FALSE)
 
 
@@ -130,11 +130,11 @@ for(i in 23:1){ # Original loop for chromosomes (23:1)
 }
 
 # save all EV values
-save(EV.rbl, EV.lcl, EV.gcbc, EV.mbc, EV.nbc, EV.pc, file = file.path(out_dir, 'ev.100k_multi_samples_v9.rda'))
+save(EV.rbl, EV.lcl, EV.gcbc, EV.mbc, EV.nbc, EV.pc, file = file.path(out_dir, 'ev.100k_multi_samples_final.rda'))
 
 # Original template loaded a different file name, keeping it for structural consistency
 # but recommend loading the new file:
-load(file.path(out_dir, 'ev.100k_multi_samples_v9.rda'))
+load(file.path(out_dir, 'ev.100k_multi_samples_final.rda''))
 
 # Collect all EV lists into a single named list for easier iteration
 all_ev_lists <- list(
