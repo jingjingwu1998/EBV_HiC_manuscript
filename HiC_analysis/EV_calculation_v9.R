@@ -1,4 +1,4 @@
-#-----------------------------------
+ce1#-----------------------------------
 # This script is used to calculate EV value and identify compartment A and B of HiC at 100k resolution.
 # And the generation of the compartment tracks in fig1a,fig1b and fig1c
 #-----------------------------------
@@ -148,9 +148,9 @@ all_ev_lists <- list(
 
 sample_names <- names(all_ev_lists)
 
+chroms <- paste0('chr',c(1:22,'X'))
 
 # generate compartment a and b figures
-chroms <- paste0('chr',c(1:22,'X'))
 for(chr in chroms){
     # Adjust height to accommodate all 6 samples
     pdf(file = file.path(out_dir, paste0(chr, '.tad.ab.pdf')), width=10, height=12)
@@ -179,46 +179,38 @@ for(i in seq_along(EV.rbl)){
 }
 dev.off()
 
-# EV histogram: pairwise comparison across all samples (where signs differ)
-# This will now generate a separate PDF for each chromosome.
-# Each PDF will contain (N * (N-1) / 2) * 3 plots for N samples.
-# For 6 samples, this is 15 * 3 = 45 plots per chromosome PDF.
-for(i in seq_along(chroms)){ # Loop through chromosomes
-    chr <- chroms[i]
-    pdf(file = file.path(out_dir, paste0(chr, '.ev.hist_pairwise_diff_signs.pdf')), width = 18, height = 24) # Increased dimensions for better visibility
-    # Calculate num_pairs outside loop for accurate par(mfrow)
-    num_pairs <- length(sample_names) * (length(sample_names) - 1) / 2
-    # Set mfrow to accommodate 3 plots per pair, for all pairs in a row
-    par(mfrow=c(num_pairs, 3), font.lab=2, cex.lab=1.2) # Adjusting rows and columns for pairwise plots
-    
-    # Pairwise comparison loops
+
+# --- EV Histograms: Pairwise Comparison (where signs differ, one PDF per chromosome) ---
+num_pairs <- length(sample_names) * (length(sample_names) - 1) / 2
+for(chr_name in chroms){ # Loop by chromosome name for consistent access
+    pdf(file = file.path(out_dir, paste0(chr_name, '.ev.hist_pairwise_diff_signs.pdf')), width = 18, height = 24)
+    par(mfrow=c(num_pairs, 3), font.lab=2, cex.lab=1.2, mar=c(4,4,3,1), oma = c(0,0,0,0)) # Explicit margins
+
     for (s1_idx in 1:(length(sample_names) - 1)) {
         for (s2_idx in (s1_idx + 1):length(sample_names)) {
             sample1_name <- sample_names[s1_idx]
             sample2_name <- sample_names[s2_idx]
 
-            ev1 <- all_ev_lists[[sample1_name]][[chr]]
-            ev2 <- all_ev_lists[[sample2_name]][[chr]]
+            ev1 <- all_ev_lists[[sample1_name]][[chr_name]] # Use chr_name for access
+            ev2 <- all_ev_lists[[sample2_name]][[chr_name]] # Use chr_name for access
 
-            # Find indices where signs differ between the two samples
             idx_diff_sign <- sign(ev1) != sign(ev2)
-            
-            # Check if there are enough points with differing signs to plot
+
             if (sum(idx_diff_sign, na.rm = TRUE) > 0) {
-                hist(ev1[idx_diff_sign], n=50, main=paste0(chr, ': ', sample1_name, ' (', sample2_name, ' diff)'))
-                hist(ev2[idx_diff_sign], n=50, main=paste0(chr, ': ', sample2_name, ' (', sample1_name, ' diff)'))
-                hist(ev2[idx_diff_sign] - ev1[idx_diff_sign], n=50, main=paste0(chr, ': ', sample2_name, '-', sample1_name, ' Diff'))
+                hist(ev1[idx_diff_sign], n=50, main=paste0(chr_name, ': ', sample1_name, ' (VS ', sample2_name, ' Diff Sign)'), xlab="EV Value")
+                hist(ev2[idx_diff_sign], n=50, main=paste0(chr_name, ': ', sample2_name, ' (VS ', sample1_name, ' Diff Sign)'), xlab="EV Value")
+                hist(ev2[idx_diff_sign] - ev1[idx_diff_sign], n=50, main=paste0(chr_name, ': ', sample2_name, '-', sample1_name, ' (Diff Bins)'), xlab="EV Difference")
             } else {
-                # Plot empty histograms or a placeholder if no differing signs for that pair/chr
-                plot(NA, xlim=c(0,1), ylim=c(0,1), type="n", xlab="", ylab="", main=paste0(chr, ': ', sample1_name, '-', sample2_name, ' (No diff signs)'))
+                plot(NA, xlim=c(0,1), ylim=c(0,1), type="n", xlab="", ylab="", main=paste0(chr_name, ': ', sample1_name, '-', sample2_name, ' (No diff signs)'))
                 plot(NA, xlim=c(0,1), ylim=c(0,1), type="n", xlab="", ylab="", main="")
-                plot(NA, xlim=c(0,1), ylim=c(0,1), type="n", xlab="", ylab="", main="")
+                plot(NA, xlim=c(0,1), ylim=c(0,1), type="n", xlab="", ylab="", main="") # <--- This was the misplaced line
             }
         }
     }
     dev.off()
 }
 
+          
 
 # MA plot: pairwise comparison across all samples
 # This will now generate a separate PDF for each chromosome.
