@@ -1,0 +1,80 @@
+#------------------------------------
+# This script is used to convert HiC-Pro contact map to bedpe format
+# for multiple samples and apply filtering.
+#------------------------------------
+library(HiCcompare)
+
+# Define the base directory for your matrix and bed files
+base_matrix_dir <- "matrix"
+
+# Define the output directory for BEDPE files
+output_bedpe_dir <- "HiC_compare_data"
+dir.create(output_bedpe_dir, recursive = TRUE, showWarnings = FALSE)
+
+# --- Sample: RBL ---
+message("Processing sample: RBL")
+mat_rbl <- read.table(file.path(base_matrix_dir, "Day0/iced/100000/Day0_CKDL220009103-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_iced.matrix"))
+bed_rbl <- read.table(file.path(base_matrix_dir, "Day0/raw/100000/Day0_CKDL220009103-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed"))
+out_rbl <- hicpro2bedpe(mat_rbl, bed_rbl)
+out_rbl_final <- do.call("rbind", out_rbl$cis)
+write.table(out_rbl_final, file.path(output_bedpe_dir, "RBL_100k_bedpe.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+out_rbl_final_2 <- out_rbl_final[which(!out_rbl_final$chr1 %in% c("chrY","chrM") & out_rbl_final$IF !=0),]
+write.table(out_rbl_final_2, file.path(output_bedpe_dir, "RBL_100k_bedpe_cleaned.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+message("---")
+
+# --- Sample: LCL ---
+message("Processing sample: LCL")
+mat_lcl <- read.table(file.path(base_matrix_dir, "Day28/iced/100000/Day28_CKDL220009104-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_iced.matrix"))
+bed_lcl <- read.table(file.path(base_matrix_dir, "Day28/raw/100000/Day28_CKDL220009104-1a_HN2CMDSX3_L3_GRCh37.bwt2pairs_100000_abs.bed"))
+out_lcl <- hicpro2bedpe(mat_lcl, bed_lcl)
+out_lcl_final <- do.call("rbind", out_lcl$cis)
+write.table(out_lcl_final, file.path(output_bedpe_dir, "LCL_100k_bedpe.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+out_lcl_final_2 <- out_lcl_final[which(!out_lcl_final$chr1 %in% c("chrY","chrM") & out_lcl_final$IF !=0),]
+write.table(out_lcl_final_2, file.path(output_bedpe_dir, "LCL_100k_bedpe_cleaned.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+message("---")
+
+# --- Sample: GCBC ---
+message("Processing sample: GCBC")
+mat_gcbc <- read.table(file.path(base_matrix_dir, "GCBC/iced/100000/GCBC_merge_read_GRCh37.bwt2pairs_100000_iced.matrix"))
+bed_gcbc <- read.table(file.path(base_matrix_dir, "GCBC/raw/100000/GCBC_merge_read_GRCh37.bwt2pairs_100000_abs.bed"))
+out_gcbc <- hicpro2bedpe(mat_gcbc, bed_gcbc)
+out_gcbc_final <- do.call("rbind", out_gcbc$cis)
+write.table(out_gcbc_final, file.path(output_bedpe_dir, "GCBC_100k_bedpe.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+out_gcbc_final_2 <- out_gcbc_final[which(!out_gcbc_final$chr1 %in% c("chrY","chrM") & out_gcbc_final$IF !=0),]
+write.table(out_gcbc_final_2, file.path(output_bedpe_dir, "GCBC_100k_bedpe_cleaned.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+message("---")
+
+# --- Sample: MBC ---
+message("Processing sample: MBC")
+mat_mbc <- read.table(file.path(base_matrix_dir, "MBC/iced/100000/MBC_merge_read_GRCh37.bwt2pairs_100000_iced.matrix"))
+bed_mbc <- read.table(file.path(base_matrix_dir, "MBC/raw/100000/MBC_merge_read_GRCh37.bwt2pairs_100000_abs.bed"))
+out_mbc <- hicpro2bedpe(mat_mbc, bed_mbc)
+out_mbc_final <- do.call("rbind", out_mbc$cis)
+write.table(out_mbc_final, file.path(output_bedpe_dir, "MBC_100k_bedpe.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+out_mbc_final_2 <- out_mbc_final[which(!out_mbc_final$chr1 %in% c("chrY","chrM") & out_mbc_final$IF !=0),]
+write.table(out_mbc_final_2, file.path(output_bedpe_dir, "MBC_100k_bedpe_cleaned.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+message("---")
+
+# --- Sample: NBC ---
+message("Processing sample: NBC")
+mat_nbc <- read.table(file.path(base_matrix_dir, "NBC/iced/100000/NBC_merge_read_GRCh37.bwt2pairs_100000_iced.matrix"))
+bed_nbc <- read.table(file.path(base_matrix_dir, "NBC/raw/100000/NBC_merge_read_GRCh37.bwt2pairs_100000_abs.bed"))
+out_nbc <- hicpro2bedpe(mat_nbc, bed_nbc)
+out_nbc_final <- do.call("rbind", out_nbc$cis)
+write.table(out_nbc_final, file.path(output_bedpe_dir, "NBC_100k_bedpe.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+out_nbc_final_2 <- out_nbc_final[which(!out_nbc_final$chr1 %in% c("chrY","chrM") & out_nbc_final$IF !=0),]
+write.table(out_nbc_final_2, file.path(output_bedpe_dir, "NBC_100k_bedpe_cleaned.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+message("---")
+
+# --- Sample: PC ---
+message("Processing sample: PC")
+mat_pc <- read.table(file.path(base_matrix_dir, "PC/iced/100000/PC_merge_read_GRCh37.bwt2pairs_100000_iced.matrix"))
+bed_pc <- read.table(file.path(base_matrix_dir, "PC/raw/100000/PC_merge_read_GRCh37.bwt2pairs_100000_abs.bed"))
+out_pc <- hicpro2bedpe(mat_pc, bed_pc)
+out_pc_final <- do.call("rbind", out_pc$cis)
+write.table(out_pc_final, file.path(output_bedpe_dir, "PC_100k_bedpe.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+out_pc_final_2 <- out_pc_final[which(!out_pc_final$chr1 %in% c("chrY","chrM") & out_pc_final$IF !=0),]
+write.table(out_pc_final_2, file.path(output_bedpe_dir, "PC_100k_bedpe_cleaned.bed"), sep="\t", row.names = FALSE, quote = FALSE, col.names = FALSE)
+message("---")
+
+message("All samples processed.")
