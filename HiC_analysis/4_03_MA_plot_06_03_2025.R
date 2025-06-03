@@ -1,5 +1,5 @@
 #-----------------------------------
-# This script is used to calculate MA plot from HiC data at 100k resolution across 6 samples.
+# This script is used to calculate MA plot for each chromosome from HiC data at 100k resolution across 6 samples.
 #-----------------------------------
 library(HiTC)
 library(rtracklayer)
@@ -29,6 +29,15 @@ chroms <- paste0('chr',c(1:22,'X'))
 # This will now generate a separate PDF for each chromosome.
 # Each PDF will contain (N * (N-1) / 2) plots for N samples.
 # For 6 samples, this is 15 plots per chromosome PDF.
+
+num_samples <- length(sample_names)
+num_pairwise_plots <- num_samples * (num_samples - 1) / 2 
+
+plots_per_row <- 3 # Desired number of columns in the plot grid
+rows_per_page <- ceiling(num_pairwise_plots / plots_per_row) # Calculate required rows based on plot count
+
+
+
 for(chr_name in chroms){ # Loop by chromosome name for consistent access
     # Adjust PDF dimensions to make individual plots roughly square in a 5x3 grid
     # A width of 15 inches for 3 columns gives 5 inches per column.
