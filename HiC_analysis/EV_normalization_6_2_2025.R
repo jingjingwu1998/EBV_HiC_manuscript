@@ -166,24 +166,39 @@ for (sample_name in names(all_ev_lists)) {
       # Zeros should remain zero and are not affected by the above positive/negative filters.
       # They are already preserved from the initial `normalized_ev_vector <- ev_vector` line.
       
-      # Any original NA values in ev_vector are also preserved as they are not affected by `which()`
+      # --- Any original NA values in ev_vector are also preserved as they are not affected by `which()`
       
       norm_chr_list[[chr_name]] <- normalized_ev_vector
     } else {
       # If original EV data for chromosome was NULL, keep it NULL
       norm_chr_list[[chr_name]] <- NULL 
     }
-  }
+  } # End of inner loop (chromosomes)
   
   normalized_ev_lists[[sample_name]] <- norm_chr_list
+} # End of outer loop (samples)
+
+
+# --- ADDITIONAL LINES TO SAVE NORMALIZED EV DATA IN RAW INPUT FORMAT ---
+# (This block is placed here, AFTER the normalization loop is complete,
+# to ensure all samples are processed before saving the final output.)
+
+# Create individual EV objects (e.g., EV.rbl, EV.lcl) in the global environment
+# from the 'normalized_ev_lists' object.
+for (sample_name_full in names(normalized_ev_lists)) {
+  # Construct the desired object name (e.g., EV.rbl, EV.lcl by converting "RBL" to "rbl")
+  object_name <- paste0("EV.", tolower(sample_name_full))
+  
+  # Assign the normalized EV list for the current sample to the newly created object name
+  assign(object_name, normalized_ev_lists[[sample_name_full]], envir = .GlobalEnv)
 }
 
+# Define the list of object names to save to the .rda file.
+# This ensures that only the desired 'EV.sample_name' objects are saved,
+# similar to how your raw input data file is structured.
+objects_to_save <- paste0("EV.", tolower(sample_names)) 
 
-
-# 'normalized_ev_lists' now contains your eigenvector values normalized according to
-# your specified strategy (harmonizing medians within each sample based on their global mean).
-# Example: Access normalized EV for RBL, chr1
-# normalized_ev_lists$RBL$chr1
-
-save(normalized_ev_lists, file = file.path(out_dir, "normalized_ev.100k_multi_samples.rda"))
-cat("Normalized EV lists saved to:", file.path(out_dir, "normalized_ev.100k_multi_samples.rda"))
+# Save these individual EV objects to the specified .rda file
+save(list = objects_to_save, file = file.path(out_dir, "normalized_ev.100k_multi_samples_06_03_2025.rda"))
+cat("Normalized EV lists saved to:", file.path(out_dir, "normalized_ev.100k_multi_samples_06_03_2025.rda"), "\n")
+  
