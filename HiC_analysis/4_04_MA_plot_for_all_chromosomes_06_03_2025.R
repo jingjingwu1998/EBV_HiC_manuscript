@@ -9,8 +9,6 @@ library(IRanges) # For runmean, if used in original EV calculation, though not d
 
 # output directory
 out_dir <- 'normalized_ev/MA_plot_for_all_chromosomes' 
-dir.create(out_dir, recursive = TRUE, showWarnings = FALSE) # Create directory if it doesn't exist
-
 # Load normalized EV data
 load(file.path(out_dir, '../normalized_ev.100k_multi_samples_06_03_2025.rda'))
 
@@ -59,14 +57,9 @@ cat("Concatenated normalized EV data saved to:", file.path(out_dir, "concatenate
 
 
 # --- Removed: Calculation of optimal global axis limits ---
-# Instead, fixed limits will be used.
-
 # Define fixed limits for X and Y axes.
-# These values are arbitrary and might need adjustment based on your data's actual range.
-# They are set to commonly observed ranges for EV values but may not be optimal for your specific dataset.
 x_lim_matrix <- c(-0.1, 0.1)  # Default fixed range for Mean EV (A)
 y_lim_matrix <- c(-0.2, 0.2)  # Default fixed range for EV Difference (M)
-
 cat("Fixed MA Plot Matrix X-axis limits (Mean EV): [", round(x_lim_matrix[1], 4), ", ", round(x_lim_matrix[2], 4), "]\n", sep="")
 cat("Fixed MA Plot Matrix Y-axis limits (EV Difference): [", round(y_lim_matrix[1], 4), ", ", round(y_lim_matrix[2], 4), "]\n", sep="")
 cat("--------------------------------------------------\n\n")
@@ -82,12 +75,10 @@ num_samples_N <- length(sample_names)
 plot_rows <- num_samples_N
 plot_cols <- num_samples_N
 
-pdf_file_name <- file.path(out_dir, "normalized_ev.100k_MA_plot_matrix_all_chroms.pdf")
+pdf_file_name <- file.path(out_dir, "normalized_ev.100k_MA_plot_matrix_all_chroms_06_04_2025.pdf")
 pdf(file = pdf_file_name,
     width = plot_cols * 5, # e.g., 6 columns * 5 inches/column = 30 inches wide
     height = plot_rows * 5) # e.g., 6 rows * 5 inches/row = 30 inches tall
-
-# Set graphical parameters for plotting multiple plots on one page
 par(mfrow = c(plot_rows, plot_cols), # Arrange plots in N rows by N columns (e.g., 6x6 grid)
     font.lab = 2, cex.lab = 1.0, # Bold labels, size 1.0
     mar = c(3, 3, 2, 1), # Margins for each individual plot: bottom, left, top, right (in lines)
