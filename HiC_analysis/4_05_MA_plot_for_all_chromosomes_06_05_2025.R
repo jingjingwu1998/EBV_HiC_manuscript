@@ -17,7 +17,7 @@ sample_names <- names(normalized_ev_lists)
 # Define standard human chromosome names in correct order.
 chroms <- paste0('chr',c(1:22,'X'))
 
-oncatenated_normalized_evs <- list()
+concatenated_normalized_evs <- list()
 for (sample_name in sample_names) {
   current_sample_data <- normalized_ev_lists[[sample_name]]
   temp_vec <- c()
