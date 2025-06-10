@@ -20,16 +20,14 @@ chroms <- paste0('chr',c(1:22,'X'))
 concatenated_normalized_evs <- list()
 for (sample_name in sample_names) {
   current_sample_data <- normalized_ev_lists[[sample_name]]
+  
   temp_vec <- c()
   for (chr in chroms) {
+    # Assuming all chromosomes exist for all samples.
     temp_vec <- c(temp_vec, current_sample_data[[chr]])
   }
   concatenated_normalized_evs[[sample_name]] <- temp_vec
 }
-  concatenated_normalized_evs[[sample_name]] <- do.call(c, sample_ev_vectors)
-}
-
-
 # --- Matrix Plot Generation ---
 
 # Define the PDF file name
