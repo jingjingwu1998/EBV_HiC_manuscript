@@ -1,5 +1,4 @@
-
-# R square calculations
+# R square calculations 1_ready_to_use_r_squared_calculation_for_all_and_highlighted_points_7.12.2025
 
 library(dplyr)
 # --- Initial Setup ---
