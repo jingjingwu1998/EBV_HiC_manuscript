@@ -103,7 +103,7 @@ for (pair in sample_pairs_to_compare) {
 
 cutoff_value <- mean(all_pairwise_sd_of_differences, na.rm = TRUE)
 cutoff_value <- 2 * cutoff_value # 2 times the mean SD as the cutoff
-print(cutoff_value) #0.019528
+print(cutoff_value) #0.01885682
 cat("-------------------------------------------------------------------\n")
 cat("Calculated Cutoff Value for identifying heavily changed bins:", cutoff_value, "\n")
 cat("-------------------------------------------------------------------\n\n")
