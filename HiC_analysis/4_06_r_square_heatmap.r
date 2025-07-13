@@ -1,4 +1,4 @@
-# R square calculations 1_ready_to_use_r_squared_calculation_for_all_and_highlighted_points_7.12.2025
+# R square calculations
 
 library(dplyr)
 # --- Initial Setup ---
@@ -34,6 +34,26 @@ for (sample_name in sample_names) {
 my_eigen_data <- concatenated_normalized_evs
 sample_lengths <- sapply(my_eigen_data, length)
 print(sample_lengths)
+
+# Verify data points of concatenated_normalized_evs
+
+all_M_values_across_all_pairs_and_chrs <- c()
+sample_pairs_to_compare <- combn(sample_names, 2, simplify = FALSE)
+
+for (pair in sample_pairs_to_compare) {
+  sample1_name <- pair[1]
+  sample2_name <- pair[2]
+  
+  for (chr in chroms) {
+    ev_values_sample1_chr <- normalized_ev_lists[[sample1_name]][[chr]]
+    ev_values_sample2_chr <- normalized_ev_lists[[sample2_name]][[chr]]
+    M_values_chr <- ev_values_sample2_chr - ev_values_sample1_chr # Sample2 - Sample1
+    all_M_values_across_all_pairs_and_chrs <- c(all_M_values_across_all_pairs_and_chrs, M_values_chr)
+  }
+}
+str(all_M_values_across_all_pairs_and_chrs) # 455,640
+# 30,376 (bin numbers in each samples) X 15 (pairs number) = 455,640
+
 
 ####################################################################
 ### Core Data Preparation and Filtering
