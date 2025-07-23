@@ -63,7 +63,7 @@ for (s1 in sample_names) {
       stopifnot(identical(seqnames(gr1), seqnames(gr2)))
       stopifnot(identical(start(gr1), start(gr2)))
       
-      delta <- gr2$eigen - gr1$eigen
+      delta <- gr2$eigen - gr1$eigen # in *_to_*comparison (like GCBC_to_LCL), values are GCBC - LCL
       gr_delta <- gr1  # structure/template from sample 1
       gr_delta$deltaEV <- delta
       gr_delta$pair <- paste0(s1, "_to_", s2)
@@ -83,14 +83,26 @@ delta_nbc_gcbc <- pair_deltas[["NBC_to_GCBC"]]
 # Assign direction signs to each bin
 delta_rbl_gcbc$sign <- sign(delta_rbl_gcbc$deltaEV)
 delta_nbc_gcbc$sign <- sign(delta_nbc_gcbc$deltaEV)
+head(delta_rbl_gcbc$deltaEV) # in from rbl to gcbc transition, ev is decreasing
+head(sign(delta_rbl_gcbc$deltaEV)) # decreasing information is extracted
+head(delta_rbl_gcbc) # we put this decreasing information to delta_rbl_gcbc
 
 # Identify bins with different sign direction
-same_direction <- delta_rbl_gcbc$sign == delta_nbc_gcbc$sign
+same_direction <- delta_rbl_gcbc$sign == delta_nbc_gcbc$sign 
+head(same_direction)
+length(which(same_direction == T)) # 27485
+# Here, T = both transitions are increasing or decreasing (27485 bins)
+# F = one transition has increased EV, another transition has decreased EV (2891 bins)
 different <- delta_rbl_gcbc[!same_direction]
+head(different)
+str(different) # 2891
 
 ########################################################################
 ### Step 4: Group Consecutive Bins with Same Sign #####################
 ########################################################################
+
+# group_consecutive_sign() that merges adjacent bins with the same direction of 
+# eigenvector change (i.e. same sign) into larger, contiguous genomic intervals. 
 
 group_consecutive_sign <- function(gr, sign_col = "sign") {
   # e.g. for: +1, +1, +1, -1, -1, +1, +1, you get:
@@ -129,39 +141,44 @@ group_consecutive_sign <- function(gr, sign_col = "sign") {
 }
 
 # Apply grouping function
+head(delta_rbl_gcbc)
 combined_rbl_gcbc <- group_consecutive_sign(delta_rbl_gcbc)
+head(combined_rbl_gcbc)
 combined_nbc_gcbc <- group_consecutive_sign(delta_nbc_gcbc)
 
 ########################################################################
 # Step 5: Output Bins with Directional Changes Between RBL→GCBC and NBC→GCBC
+# PS: 30376 total bins = bins with diff sign + bins with same sign
 ########################################################################
 
 # Identify bins with same or different ΔEV sign
 same_sign_rbl_gcbc_vs_nbc_gcbc <- delta_rbl_gcbc$sign == delta_nbc_gcbc$sign
-
+same_sign_rbl_gcbc_vs_nbc_gcbc
 # ------------------- DIFFERENTLY ALTERED BINS -----------------------
 
 # Bins where sign differs
 diff_bins_rbl_gcbc_vs_nbc_gcbc <- delta_rbl_gcbc[!same_sign_rbl_gcbc_vs_nbc_gcbc]
-
+str(diff_bins_rbl_gcbc_vs_nbc_gcbc) #2891 bins have different sign
+head(diff_bins_rbl_gcbc_vs_nbc_gcbc)
 # Merge consecutive bins with same sign
 merged_diff_bins_rbl_gcbc_vs_nbc_gcbc <- group_consecutive_sign(diff_bins_rbl_gcbc_vs_nbc_gcbc)
-
+str(merged_diff_bins_rbl_gcbc_vs_nbc_gcbc) #1338 consecutive bins have different sign
 # Convert to data frame
 df_diff_rbl_gcbc_vs_nbc_gcbc <- as.data.frame(merged_diff_bins_rbl_gcbc_vs_nbc_gcbc, row.names = NULL)
 head(df_diff_rbl_gcbc_vs_nbc_gcbc[, c("seqnames", "start", "end", "sign")])
-
+str(df_diff_rbl_gcbc_vs_nbc_gcbc) #1338 consecutive bins have different sign
 # ------------------- SIMILARLY ALTERED BINS -------------------------
 
 # Bins where sign is the same
 same_bins_rbl_gcbc_vs_nbc_gcbc <- delta_rbl_gcbc[same_sign_rbl_gcbc_vs_nbc_gcbc]
-
+str(same_bins_rbl_gcbc_vs_nbc_gcbc) # 27485 bins have same sign
 # Merge consecutive bins with same sign
 merged_same_bins_rbl_gcbc_vs_nbc_gcbc <- group_consecutive_sign(same_bins_rbl_gcbc_vs_nbc_gcbc)
-
+str(merged_same_bins_rbl_gcbc_vs_nbc_gcbc) # 2124 consecutive bins have same sign
 # Convert to data frame
 df_same_rbl_gcbc_vs_nbc_gcbc <- as.data.frame(merged_same_bins_rbl_gcbc_vs_nbc_gcbc, row.names = NULL)
 head(df_same_rbl_gcbc_vs_nbc_gcbc[, c("seqnames", "start", "end", "sign")])
+str(df_same_rbl_gcbc_vs_nbc_gcbc) # 2124 consecutive bins have same sign
 
 
 
@@ -184,22 +201,66 @@ same_sign_rbl_lcl_vs_nbc_lcl <- delta_rbl_lcl$sign == delta_nbc_lcl$sign
 
 # Bins where sign differs
 diff_bins_rbl_lcl_vs_nbc_lcl <- delta_rbl_lcl[!same_sign_rbl_lcl_vs_nbc_lcl]
-
+str(diff_bins_rbl_lcl_vs_nbc_lcl) # 2976 bins have different sign
 # Merge consecutive bins with same sign
 merged_diff_bins_rbl_lcl_vs_nbc_lcl <- group_consecutive_sign(diff_bins_rbl_lcl_vs_nbc_lcl)
-
+str(merged_diff_bins_rbl_lcl_vs_nbc_lcl) # 1385 consecutive bins have different sign
 # Convert to data frame
 df_diff_rbl_lcl_vs_nbc_lcl <- as.data.frame(merged_diff_bins_rbl_lcl_vs_nbc_lcl, row.names = NULL)
 head(df_diff_rbl_lcl_vs_nbc_lcl[, c("seqnames", "start", "end", "sign")])
-
+str(df_diff_rbl_lcl_vs_nbc_lcl) # 1385 consecutive bins have different sign
 # ------------------- SIMILARLY ALTERED BINS -------------------------
 
 # Bins where sign is the same
 same_bins_rbl_lcl_vs_nbc_lcl <- delta_rbl_lcl[same_sign_rbl_lcl_vs_nbc_lcl]
-
+str(same_bins_rbl_lcl_vs_nbc_lcl) # 27400 bins have same sign
 # Merge consecutive bins with same sign
 merged_same_bins_rbl_lcl_vs_nbc_lcl <- group_consecutive_sign(same_bins_rbl_lcl_vs_nbc_lcl)
-
+str(merged_same_bins_rbl_lcl_vs_nbc_lcl) # 2198 consecutive bins have same sign
 # Convert to data frame
 df_same_rbl_lcl_vs_nbc_lcl <- as.data.frame(merged_same_bins_rbl_lcl_vs_nbc_lcl, row.names = NULL)
 head(df_same_rbl_lcl_vs_nbc_lcl[, c("seqnames", "start", "end", "sign")])
+str(df_same_rbl_lcl_vs_nbc_lcl) # 2198 consecutive bins have same sign
+
+
+########################################################################
+# Step 7: Output Bins with Directional Changes Between GCBC→LCL
+########################################################################
+
+# Extract GRanges for ΔEV from GCBC to LCL
+delta_gcbc_lcl <- pair_deltas[["GCBC_to_LCL"]]
+# Compute the sign of ΔEV
+delta_gcbc_lcl$sign <- sign(delta_gcbc_lcl$deltaEV)
+str(delta_gcbc_lcl$sign)
+# ------------------- COUNT CHANGED VS RETAINED BINS ------------------
+
+# A bin is "retained" if ΔEV == 0 (no change), "changed" otherwise
+changed_bins_logical <- delta_gcbc_lcl$sign != 0
+changed_bins_gcbc_to_lcl <- delta_gcbc_lcl[changed_bins_logical]
+str(changed_bins_gcbc_to_lcl) # GCBC→LCL: Changed bins = 28568 
+retained_bins_gcbc_to_lcl <- delta_gcbc_lcl[!changed_bins_logical]
+str(retained_bins_gcbc_to_lcl) # GCBC→LCL: Retained (ΔEV = 0) bins = 1808 
+# Bin counts
+cat("GCBC→LCL: Total bins =", length(delta_gcbc_lcl), "\n")
+cat("GCBC→LCL: Changed bins =", length(changed_bins_gcbc_to_lcl), "\n")
+cat("GCBC→LCL: Retained (ΔEV = 0) bins =", length(retained_bins_gcbc_to_lcl), "\n")
+
+# ------------------ GROUP CONSECUTIVE CHANGED BINS -------------------
+
+# Merge consecutive changed bins with same sign
+merged_changed_bins_gcbc_to_lcl <- group_consecutive_sign(changed_bins_gcbc_to_lcl)
+
+# Merge retained bins as well (though they are sign = 0)
+# You may skip this if not needed, or keep it for symmetry
+merged_retained_bins_gcbc_to_lcl <- group_consecutive_sign(retained_bins_gcbc_to_lcl)
+
+# Print counts
+cat("GCBC→LCL: Merged consecutive changed bin regions =", length(merged_changed_bins_gcbc_to_lcl), "\n")
+cat("GCBC→LCL: Merged consecutive retained bin regions =", length(merged_retained_bins_gcbc_to_lcl), "\n")
+
+# Optional: export or inspect head of merged bins
+df_merged_changed_gcbc_to_lcl <- as.data.frame(merged_changed_bins_gcbc_to_lcl, row.names = NULL)
+df_merged_retained_gcbc_to_lcl <- as.data.frame(merged_retained_bins_gcbc_to_lcl, row.names = NULL)
+
+head(df_merged_changed_gcbc_to_lcl[, c("seqnames", "start", "end", "sign")])
+head(df_merged_retained_gcbc_to_lcl[, c("seqnames", "start", "end", "sign")])
