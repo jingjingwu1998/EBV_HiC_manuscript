@@ -19,7 +19,7 @@ cd $PROJECT_DIR
 
 # Step 1: HiC-Pro mapping command
 # /share/lab_teng/data/software/HiC-Pro_3.1.0/bin/HiC-Pro -c 0_config-hicpro.txt -i $RAW_DATA -o hicpro_mapping_2 -s mapping -s quality_checks -p
-# 1.1 remember to edit input files in hicpro_mapping_2 file as following format
+# 1.1 remember to edit input files in hicpro_mapping_2 file as following format, and ends up with _1 and _2 is important
 # Day28/Day28_CKDL220009104-1a_HN2CMDSX3_L3_1.fq.gz
 # Day28/Day28_CKDL220009104-1a_HN2CMDSX3_L3_2.fq.gz
 
