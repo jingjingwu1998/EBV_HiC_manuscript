@@ -35,6 +35,7 @@ cd $PROJECT_DIR
 # update the map data directory by export MAP_DATA="/share/lab_teng/trainee/JingjingWu/EBV/hicpro_mapping_2/hicpro_mapping_2, before running this command
 /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro_install_path/HiC-Pro_3.1.0/bin/HiC-Pro -c 0_config-hicpro.txt -i ${MAP_DATA}/bowtie_results/bwt2 -o proc_hic_out -s proc_hic -s quality_checks -p
 # after running this command, please go to file proc_hic_out for next steps
+# to run HiCPro_step1_hic_bo.sh, please adjust the file format in inputfiles_hic_bo.txt into "rawdata/cMCL1/cMCL1_read_1_GRCh37.bwt2merged"
 
 # Step 3: HiC-Pro merge_persample command 
 /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro_install_path/HiC-Pro_3.1.0/bin/HiC-Pro -i ${MAP_DATA}/proc_hic_out/hic_results/data -o ${MAP_DATA}/merge_validpairs -c ${MAP_DATA}/0_config-hicpro.txt -s merge_persample -p
