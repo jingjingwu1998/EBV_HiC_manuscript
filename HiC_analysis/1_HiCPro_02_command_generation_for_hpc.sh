@@ -38,6 +38,7 @@ cd $PROJECT_DIR
 # to run HiCPro_step1_hic_bo.sh, please adjust the file format in inputfiles_hic_bo.txt into "rawdata/cMCL1/cMCL1_read_1_GRCh37.bwt2merged"
 
 # Step 3: HiC-Pro merge_persample command 
+# change this directory before running export MAP_DATA="/share/lab_teng/trainee/JingjingWu/EBV/hicpro_mapping_2"
 /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro_install_path/HiC-Pro_3.1.0/bin/HiC-Pro -i ${MAP_DATA}/proc_hic_out/hic_results/data -o ${MAP_DATA}/merge_validpairs -c ${MAP_DATA}/0_config-hicpro.txt -s merge_persample -p
 
 # Step 4: HiC-Pro build_contact_maps and ice_norm commands 
