@@ -42,5 +42,5 @@ cd $PROJECT_DIR
 /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro_install_path/HiC-Pro_3.1.0/bin/HiC-Pro -i ${MAP_DATA}/proc_hic_out/hic_results/data -o ${MAP_DATA}/merge_validpairs -c ${MAP_DATA}/0_config-hicpro.txt -s merge_persample -p
 
 # Step 4: HiC-Pro build_contact_maps and ice_norm commands 
-# before run the command please upgrade memory to 128G
+# before run the command please upgrade memory to 300G and activate py3.9 
 /share/lab_teng/trainee/JingjingWu/EBV/HiC_performance/HiC-Pro_install_path/HiC-Pro_3.1.0/bin/HiC-Pro -i ${MAP_DATA}/merge_validpairs/hic_results/data -o ${MAP_DATA}/contact_maps -c ${MAP_DATA}/0_config-hicpro.txt -s build_contact_maps -s ice_norm -p
